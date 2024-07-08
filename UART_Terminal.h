@@ -3,10 +3,13 @@
 
 /* Dependencies */
 #include <avr/pgmspace.h>
+#if defined(ARDUINO)
 #include <UART.h>
+#else
+#include "..\UART\UART.h"
+#endif
 
 /* Macros */
-#define UART_TERMINAL_NEW_LINE_CAHR (const char)'\n'
 #ifndef BIN
 #define BIN (const uint8_t)2
 #endif
@@ -24,6 +27,13 @@
 class UART_Terminal
 {
     public:
+        enum printType
+        {
+            INFO,
+            WARNING,
+            ERROR
+        };
+        
         UART_Terminal(__UART__* uart);
         ~UART_Terminal();
         const uint8_t begin    (const uint32_t baudrate);
@@ -44,7 +54,11 @@ class UART_Terminal
         void          println  (const uint16_t n, const uint8_t base = DEC);
         void          print    (const uint32_t n, const uint8_t base = DEC);
         void          println  (const uint32_t n, const uint8_t base = DEC);
-        const uint8_t end      (void);  
+        void          print    (const char c, printType type);
+        void          println  (const char c, printType type);
+        void          print    (const char* s, printType type);
+        void          println  (const char* s, printType type);
+        const uint8_t end      (void);
     private:
         __UART__* uart;
 };

@@ -38,7 +38,7 @@ const char UART_Terminal::read(void)
 
 void UART_Terminal::println(void)
 {
-    this->uart->write((const uint8_t)UART_TERMINAL_NEW_LINE_CAHR);
+    this->print('\n');
 }
 
 void UART_Terminal::print(const char c)
@@ -95,8 +95,8 @@ void UART_Terminal::print(const uint8_t n, const uint8_t base)
             this->print((const char)((n % 10) + '0'));
             break;
         case HEX:
-            this->print(HEX_DIGIT((n >> 4) & 0xF));
-            this->print(HEX_DIGIT(n & 0xF));
+            this->print(HEX_DIGIT((n >> 4) & 0x0F));
+            this->print(HEX_DIGIT(n & 0x0F));
             break;
         default:
             break;
@@ -133,7 +133,7 @@ void UART_Terminal::print(const uint16_t n, const uint8_t base)
             break;
         case HEX:
             for (int i = 12; i >= 0; i -= 4)
-                this->print(HEX_DIGIT((n >> i) & 0xF));
+                this->print(HEX_DIGIT((n >> i) & 0x0F));
             break;
         default:
             break;
@@ -181,7 +181,7 @@ void UART_Terminal::print(const uint32_t n, const uint8_t base)
             break;
         case HEX:
             for (int i = 28; i >= 0; i -= 4)
-                this->print(HEX_DIGIT((n >> i) & 0xF));
+                this->print(HEX_DIGIT((n >> i) & 0x0F));
             break;
         default:
             break;
@@ -191,6 +191,55 @@ void UART_Terminal::print(const uint32_t n, const uint8_t base)
 void UART_Terminal::println(const uint32_t n, const uint8_t base)
 {
     this->print(n, base);
+    this->println();
+}
+
+void UART_Terminal::print(const char c, printType type)
+{
+    switch (type)
+    {
+        case INFO:
+            this->print("\e[92m");
+            break;
+        case WARNING:
+            this->print("\e[93m");
+            break;
+        case ERROR:
+            this->print("\e[91m");
+            break;
+        default:
+            break;
+    }
+
+    this->print(c);
+
+    switch (type)
+    {
+        case INFO:
+        case WARNING:
+        case ERROR:
+            this->print("\e[0m");
+            break;
+        default:
+            break;
+    }
+}
+
+void UART_Terminal::println(const char c, printType type)
+{
+    this->print(c, type);
+    this->println();
+}
+
+void UART_Terminal::print(const char* s, printType type)
+{
+    while(*s)
+        this->print(*s++, type);
+}
+
+void UART_Terminal::println(const char* s, printType type)
+{
+    this->print(s, type);
     this->println();
 }
 

@@ -24,5 +24,8 @@ void loop(void)
     terminal.println((const uint32_t)4294967295, OCT);
     terminal.println((const uint32_t)4294967295);
     terminal.println((const uint32_t)4294967295, HEX);
+    terminal.println("This is an info!", UART_Terminal::INFO);
+    terminal.println("This is a warning!", UART_Terminal::WARNING);
+    terminal.println("This is an error!", UART_Terminal::ERROR);
     delay(1000);
 }
